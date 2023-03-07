@@ -19,7 +19,9 @@ export function Header({ title, subtitle }: HeaderProps) {
       >
         {title}
       </Typography>
-      <Typography variant="h5" color={colors.greenAccent[400]}>{subtitle}</Typography>
+      <Typography variant="h5" color={colors.greenAccent[400]}>
+        {subtitle}
+      </Typography>
     </Box>
   );
 }
