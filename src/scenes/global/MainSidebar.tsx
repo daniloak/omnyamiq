@@ -10,15 +10,23 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { borderRight } from "@mui/system";
 import { ReactNode, SetStateAction, useState } from "react";
-import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
+import {
+  Menu,
+  menuClasses,
+  MenuItem,
+  MenuItemStyles,
+  Sidebar,
+  sidebarClasses,
+  useProSidebar,
+} from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { tokens } from "../../theme";
 
-interface ItemProps{
-  title:string;
+interface ItemProps {
+  title: string;
   to: string;
   icon: ReactNode;
   selected: string;
@@ -41,63 +49,117 @@ function Item({ title, to, icon, selected, setSelected }: ItemProps) {
       <Link to={to} />
     </MenuItem>
   );
-};
+}
 
-export function Sidebar() {
+export function MainSidebar() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { collapseSidebar, collapsed } = useProSidebar();
   const [selected, setSelected] = useState("Dashboard");
 
+  const menuItemStyles: MenuItemStyles = {
+    root: {
+      fontSize: "14px",
+      fontWeight: 400,
+    },
+    icon: {
+      // color: themes[theme].menu.icon,
+      // [`&.${menuClasses.disabled}`]: {
+      //   color: themes[theme].menu.disabled.color,
+      // },
+    },
+    SubMenuExpandIcon: {
+      color: "#b6b7b9",
+    },
+    subMenuContent: ({ level }) => ({
+      // backgroundColor:
+      //   level === 0
+      //     ? hexToRgba(
+      //         themes[theme].menu.menuContent,
+      //         hasImage && !collapsed ? 0.4 : 1
+      //       )
+      //     : "transparent",
+    }),
+    button: {
+      // [`&.${menuClasses.disabled}`]: {
+      //   color: themes[theme].menu.disabled.color,
+      // },
+      "&:hover": {
+        backgroundColor: "transparent",
+        color: "#868dfb !important",
+      },
+    },
+    label: ({ open }) => ({
+      justifyContent: "space-between",
+
+      // fontWeight: open ? 600 : undefined,
+    }),
+  };
+
   return (
-    <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
+    // sx={{
+    //   "& .pro-sidebar-inner": {
+    //     background: `${colors.primary[400]} !important`,
+    //   },
+    //   "& .pro-icon-wrapper": {
+    //     backgroundColor: "transparent !important",
+    //   },
+    //   "& .pro-inner-item": {
+    //     padding: "5px 35px 5px 20px !important",
+    //   },
+    //   "& .pro-inner-item:hover": {
+    //     color: "#868dfb !important",
+    //   },
+    //   "& .pro-menu-item.active": {
+    //     color: "#6870fa !important",
+    //   },
+    // }}
+
+    <Sidebar
+      rootStyles={{
+        [`.${sidebarClasses.container}`]: {
+          background: `${colors.primary[400]}`,
+          padding: "10px",
         },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
+        border: "none",
+        width: "270px",
+        minWidth: "270px",
       }}
     >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  Corcerama
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
-              </Box>
-            )}
-          </MenuItem>
+      <Box
+        sx={{
+          display: "flex",
+          height: "100%",
+          flexDirection: "column",
+        }}
+      >
+        <Box sx={{ flex: "1" }}>
+          <Menu menuItemStyles={menuItemStyles}>
+            {/* LOGO AND MENU ICON */}
+            <MenuItem
+              onClick={() => collapseSidebar(!collapsed)}
+              icon={collapsed ? <MenuOutlinedIcon /> : undefined}
+              style={{
+                color: colors.grey[100],
+              }}
+            >
+              {!collapsed && (
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="h3" color={colors.grey[100]}>
+                    Corcerama
+                  </Typography>
+                  <IconButton onClick={() => collapseSidebar()}>
+                    <MenuOutlinedIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </MenuItem>
 
-          {/* {!isCollapsed && (
+            {/* {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
                 <img
@@ -124,7 +186,6 @@ export function Sidebar() {
             </Box>
           )} */}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
               title="Início"
               to="/"
@@ -190,47 +251,35 @@ export function Sidebar() {
               selected={selected}
               setSelected={setSelected}
             />
-
+          </Menu>
+        </Box>
+        <Divider />
+        <Box>
+          <Menu menuItemStyles={menuItemStyles}>
             <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Charts
+              Configurações
             </Typography>
             <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
+              title="Usuário"
+              to="/form"
+              icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
+              title="Logout"
+              to="/form"
+              icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
+          </Menu>
+        </Box>
+      </Box>
+    </Sidebar>
   );
-};
-
-export default Sidebar;
+}

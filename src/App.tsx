@@ -1,11 +1,11 @@
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { Route, Routes } from 'react-router-dom';
-import { Contacts } from './scenes/contacts';
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
+import { Contacts } from "./scenes/contacts";
 import { Dashboard } from "./scenes/dashboard";
-import { Sidebar } from './scenes/global/Sidebar';
-import { Topbar } from './scenes/global/Topbar';
-import { Invoices } from './scenes/invoices';
-import { Team } from './scenes/team';
+import { MainSidebar } from "./scenes/global/MainSidebar";
+import { Topbar } from "./scenes/global/Topbar";
+import { Invoices } from "./scenes/invoices";
+import { Team } from "./scenes/team";
 import { ColorModeContext, useMode } from "./theme";
 // import { Invoices } from "./invoices";
 // import { Contacts } from "./contacts";
@@ -18,21 +18,21 @@ import { ColorModeContext, useMode } from "./theme";
 // import { Calendar } from "./calendar";
 
 export function App() {
-  const {theme, colorMode} = useMode();
-  
+  const { theme, colorMode } = useMode();
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <CssBaseline/>
-        <div className='app'>
-          <Sidebar/>
+        <CssBaseline />
+        <div className="app">
+          <MainSidebar />
           <main className="content">
-            <Topbar/>
+            <Topbar />
             <Routes>
-              <Route path="/" element={<Dashboard/>} />
-              <Route path="/team" element={<Team/>} />
-              <Route path="/contacts" element={<Contacts/>} />
-              <Route path="/invoices" element={<Invoices/>} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/invoices" element={<Invoices />} />
               {/*<Route path="/form" element={<Form/>} />
               <Route path="/bar" element={<Bar/>} />
               <Route path="/pie" element={<Pie/>} />
@@ -45,5 +45,5 @@ export function App() {
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
-  )
+  );
 }
